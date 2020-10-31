@@ -29,7 +29,7 @@ def parse_date(date):
 def process_file(file, type="oisst"):
     nc = xr.open_dataset(file)
 
-    with open('config.json') as f:
+    with open('in/config.json') as f:
         cfg = json.load(f)[type]
         cfg['date'] = parse_date(getattr(nc, cfg['date']))
 
@@ -62,6 +62,7 @@ def gen_map(df, cfg):
     # Render Data into heatmap
     cmap = "rainbow"
     MAP = sb.heatmap(df, mask=MASK, cmap=cmap, cbar=False, vmin=0)
+    MAP.tick_params(left=False, bottom=False)
     MAP.set_facecolor('xkcd:black')
     MAP.invert_yaxis()
     return "oisst"
