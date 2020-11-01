@@ -1,0 +1,17 @@
+{
+    "oisst": {
+        "date": "time_coverage_start",
+        "pivot": "sst",
+        "vars": [
+            "time",
+            "zlev"
+        ]
+    },
+    "seaflux": {
+        "date": "",
+        "vars": [
+            "time",
+            "lat"
+        ]
+    }
+}
