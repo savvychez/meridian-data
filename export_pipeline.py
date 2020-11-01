@@ -17,17 +17,11 @@ def blackToAlpha(img):
     alpha = np.where(black_mask, 0, imgnp[:, :, -1])
 
     imgnp[:, :, -1] = alpha
-
-    del img
-    del black
-    del black_mask
-    del alpha 
-
     return Image.fromarray(np.uint8(imgnp))
 
 
 def clearMask(img):
-    mask = Image.open("in/mask.png")
+    mask = Image.open("in/mask_5k.png")
     mask = mask.convert("RGBA")
 
     img.paste(mask, (0, 0), mask)
@@ -40,12 +34,6 @@ def clearMask(img):
     alpha = np.where(black_mask, 0, imgnp[:, :, -1])
 
     imgnp[:, :, -1] = alpha
-
-    del img
-    del mask
-    del black_mask
-    del alpha
-
     return Image.fromarray(np.uint8(imgnp))
 
     # im = cv2.imread(path)
@@ -77,32 +65,36 @@ def modify_image(path, tqdm):
 
     tqdm.write("Loaded image! Converting alpha channel...")
 
-    img2 = blackToAlpha(img)
-    del img 
+    img = blackToAlpha(img)
 
     tqdm.write("Converted alpha channel! Adjusting for Equirectangular...")
 
-    img3 = img2.resize((5400, 2700))
+    img = img.resize((5400, 2700))
 
-    del img2
-
-    img4 = clearMask(img3)
-
-    del img3
+    img = clearMask(img)
 
     tqdm.write("Resized! Exporting...")
 
-    img4.save(path, "PNG")
-
-    del img4
+    img.save(path, "PNG")
 
     tqdm.write("Export complete...\n")
 
+def export_day(date, year, tqdm):
+    process.oisst_day(date, tqdm,  temp="temp/",
+                        csv=f"out/data/{year}", img=f"out/img/{year}",
+                        stats="out/stats/",
+                        _callback=modify_image)
+
+# def export_days(start, end, year):
+#     process.oisst_range(start, end, temp="temp/",
+#                         csv=f"out/data/{year}", img=f"out/img/{year}",
+#                         stats="out/stats/",
+#                         _callback=modify_image)
 
 def main():
     start = time.perf_counter()
 
-    year = input("Year: ")
+    year = 2019
 
     if not os.path.exists(f"out/data/{year}"):
         os.makedirs(f"out/data/{year}")
@@ -113,16 +105,3 @@ def main():
     if not os.path.exists(f"out/stats/{year}"):
         os.makedirs(f"out/stats/{year}")
 
-    start = input("Start date YYYY/MM/DD: ")
-    end = input("End date YYYY/MM/DD: ")
-
-    process.oisst_range(start, end, temp="temp/",
-                        csv=f"out/data/{year}", img=f"out/img/{year}",
-                        stats="out/stats/",
-                        _callback=modify_image)
-
-    end = time.perf_counter()-start
-    print(f"\nScript executed successfully in {end:0.2f} seconds")
-
-
-main()

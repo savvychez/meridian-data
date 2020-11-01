@@ -3,7 +3,7 @@ import nc
 import json
 from PIL import Image
 from datetime import timedelta, datetime
-from tqdm import tqdm
+# from tqdm import tqdm
 
 
 def gen_vis(df, cfg):
@@ -85,7 +85,7 @@ def export_img(cfg, plt, cmap, working_root, out_root, crop=True, dpi=300):
     return out
 
 
-def __oisst_export__(y, m, d, do_csv=False, do_img=True, do_vis=False, temp_path="/", csv_path="/", stats_path="/", img_path="/"):  # noqa: E501
+def __oisst_export__(y, m, d, tqdm, do_csv=False, do_img=True, do_vis=False, temp_path="/", csv_path="/", stats_path="/", img_path="/"):  # noqa: E501
     mfill = str(m).zfill(2)
     dfill = str(d).zfill(2)
 
@@ -169,16 +169,19 @@ def __get_range__(start_date, end_date):
     return days
 
 
-def oisst_day(date_string, do_csv=True, do_img=True, temp="", csv="", img="", stats="", _callback=None):  # noqa: E501
-    day = datetime.strptime(date_string, '%Y/%m/%d').timetuple()
-    __oisst_export__(day[0], day[1], day[2], do_csv, do_img, temp_path=temp, csv_path=csv, stats_path=stats, img_path=img)  # noqa: E501
-
-
-def oisst_range(start_date, end_date, do_csv=True, do_img=True, temp="", csv="", img="", stats="", _callback=None):  # noqa: E501
-    date_range = __get_range__(start_date, end_date)
-    for day in tqdm(date_range):
-        tqdm.write("\n----------------------------------------")
-        tqdm.write(f"Processing data for {day[1]}/{day[2]}/{day[0]}")  # noqa: E501
-        path = __oisst_export__(day[0], day[1], day[2], do_csv, do_img, temp_path=temp, csv_path=csv, stats_path=stats, img_path=img)  # noqa: E501
-        if _callback:
+def oisst_day(day, tqdm, do_csv=True, do_img=True, temp="", csv="", img="", stats="", _callback=None):  # noqa: E501
+    # day = datetime.strptime(date_string, '%Y/%m/%d').timetuple()
+    tqdm.write("\n----------------------------------------")
+    tqdm.write(f"Processing data for {day[1]}/{day[2]}/{day[0]}")
+    path = __oisst_export__(day[0], day[1], day[2], tqdm, do_csv, do_img, temp_path=temp, csv_path=csv, stats_path=stats, img_path=img)  # noqa: E501
+    if _callback:
             _callback(path, tqdm)
+
+# def oisst_range(start_date, end_date, do_csv=True, do_img=True, temp="", csv="", img="", stats="", _callback=None):  # noqa: E501
+#     date_range = __get_range__(start_date, end_date)
+#     for day in tqdm(date_range):
+#         tqdm.write("\n----------------------------------------")
+#         tqdm.write(f"Processing data for {day[1]}/{day[2]}/{day[0]}")  # noqa: E501
+#         path = __oisst_export__(day[0], day[1], day[2], do_csv, do_img, temp_path=temp, csv_path=csv, stats_path=stats, img_path=img)  # noqa: E501
+#         if _callback:
+#             _callback(path, tqdm)
