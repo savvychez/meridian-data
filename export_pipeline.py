@@ -17,6 +17,9 @@ def blackToAlpha(img):
     alpha = np.where(black_mask, 0, imgnp[:, :, -1])
 
     imgnp[:, :, -1] = alpha
+
+    del img
+
     return Image.fromarray(np.uint8(imgnp))
 
 
@@ -34,6 +37,9 @@ def clearMask(img):
     alpha = np.where(black_mask, 0, imgnp[:, :, -1])
 
     imgnp[:, :, -1] = alpha
+
+    del img
+
     return Image.fromarray(np.uint8(imgnp))
 
     # im = cv2.imread(path)
@@ -76,6 +82,8 @@ def modify_image(path, tqdm):
     tqdm.write("Resized! Exporting...")
 
     img.save(path, "PNG")
+
+    del img
 
     tqdm.write("Export complete...\n")
 
