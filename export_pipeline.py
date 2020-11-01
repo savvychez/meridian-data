@@ -22,7 +22,7 @@ def blackToAlpha(img):
     del black
     del black_mask
     del alpha 
-    
+
     return Image.fromarray(np.uint8(imgnp))
 
 
@@ -42,6 +42,9 @@ def clearMask(img):
     imgnp[:, :, -1] = alpha
 
     del img
+    del mask
+    del black_mask
+    del alpha
 
     return Image.fromarray(np.uint8(imgnp))
 
@@ -75,18 +78,23 @@ def modify_image(path, tqdm):
     tqdm.write("Loaded image! Converting alpha channel...")
 
     img2 = blackToAlpha(img)
+    del img 
 
     tqdm.write("Converted alpha channel! Adjusting for Equirectangular...")
 
-    img2 = img.resize((5400, 2700))
+    img3 = img2.resize((5400, 2700))
 
-    img = clearMask(img)
+    del img2
+
+    img4 = clearMask(img3)
+
+    del img3
 
     tqdm.write("Resized! Exporting...")
 
-    img.save(path, "PNG")
+    img4.save(path, "PNG")
 
-    del img
+    del img4
 
     tqdm.write("Export complete...\n")
 

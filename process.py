@@ -77,7 +77,7 @@ def export_img(cfg, plt, cmap, working_root, out_root, crop=True, dpi=300):
 
         # Exports cropped map
         cropped.save(out, quality=100)
-        # os.remove(working)  # Deletes temp map
+        os.remove(working)  # Deletes temp map
     else:
         plt.savefig(out, dpi=dpi)
 
