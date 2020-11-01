@@ -102,7 +102,7 @@ def modify_image(path, tqdm):
 def main():
     start = time.perf_counter()
 
-    year = input("Year:")
+    year = input("Year: ")
 
     if not os.path.exists(f"out/data/{year}"):
         os.makedirs(f"out/data/{year}")
@@ -113,7 +113,10 @@ def main():
     if not os.path.exists(f"out/stats/{year}"):
         os.makedirs(f"out/stats/{year}")
 
-    process.oisst_range(f"{year}/01/01", f"{year}/01/05", temp="temp/",
+    start = input("Start date YYYY/MM/DD: ")
+    end = input("End date YYYY/MM/DD: ")
+
+    process.oisst_range(start, end, temp="temp/",
                         csv=f"out/data/{year}", img=f"out/img/{year}",
                         stats="out/stats/",
                         _callback=modify_image)
