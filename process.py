@@ -14,7 +14,8 @@ def gen_vis(df, cfg):
     """
 
     plt_data = nc.gen_map(df, cfg)
-    plt_data[0].show()
+    frame = plt_data[0]
+    # frame.show()
 
 
 def export_img(cfg, plt, cmap, working_root, out_root, crop=True, dpi=300):
@@ -79,6 +80,8 @@ def export_img(cfg, plt, cmap, working_root, out_root, crop=True, dpi=300):
         # os.remove(working)  # Deletes temp map
     else:
         plt.savefig(out, dpi=dpi)
+
+    del plt
     return out
 
 
@@ -139,6 +142,9 @@ def __oisst_export__(y, m, d, do_csv=False, do_img=True, do_vis=False, temp_path
         path = export_img(cfg, plt_data[0], plt_data[1], dpi=300, working_root=temp_path, out_root=img_path)  # noqa: E501
         tqdm.write("Exported!")
 
+    del df
+    del cfg
+    
     return path
 
 
