@@ -85,35 +85,35 @@ def export_img(cfg, plt, cmap, working_root, out_root, crop=True, dpi=300):
     return out
 
 
-def __oisst_export__(y, m, d, tqdm, do_csv=False, do_img=True, do_vis=False, temp_path="/", csv_path="/", stats_path="/", img_path="/"):  # noqa: E501
+def __oisst_export__(y, m, d, do_csv=False, do_img=True, do_vis=False, temp_path="/", csv_path="/", stats_path="/", img_path="/"):  # noqa: E501
     mfill = str(m).zfill(2)
     dfill = str(d).zfill(2)
 
-    tqdm.write("\nDownloading...")
+    print("\nDownloading...")
     url = f"https://www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr/{y}{mfill}/oisst-avhrr-v02r01.{y}{mfill}{dfill}.nc"  # noqa: E501
     df, cfg = nc.process_url(url)
-    tqdm.write("Downloaded & Processed!")
+    print("Downloaded & Processed!")
 
     # Show statistics
     stats = {}
-    tqdm.write("\nStatistics:")
+    print("\nStatistics:")
     column = df['sst']
 
     max = '%.2f' % round(column.max(), 2)
     stats['max'] = max
-    tqdm.write(f"Max: {stats['max']}")
+    print(f"Max: {stats['max']}")
 
     min = '%.2f' % round(column.min(), 2)
     stats['min'] = min
-    tqdm.write(f"Min: {stats['min']}")
+    print(f"Min: {stats['min']}")
 
     avg = '%.2f' % round(column.mean(), 2)
     stats['avg'] = avg
-    tqdm.write(f"Avg: {stats['avg']}")
+    print(f"Avg: {stats['avg']}")
 
     std = '%.2f' % round(column.std(), 2)
     stats['std'] = std
-    tqdm.write(f"StD: {stats['std']}")
+    print(f"StD: {stats['std']}")
 
     # Write local statistics to file
     with open(f"{stats_path}/{y}/{y}-{mfill}-{dfill}.json", 'w') as f:
@@ -131,16 +131,16 @@ def __oisst_export__(y, m, d, tqdm, do_csv=False, do_img=True, do_vis=False, tem
         f.truncate()
 
     if do_csv:
-        tqdm.write("\nExporting CSV...")
+        print("\nExporting CSV...")
         df.to_csv(f"{csv_path}/{cfg['date']}_oisst.csv", index=False)
-        tqdm.write("Exported!")
+        print("Exported!")
 
     if do_img:
-        tqdm.write("\nGenerating image...")
+        print("\nGenerating image...")
         plt_data = nc.gen_plt(df, cfg)
-        tqdm.write("Generated! Exporting image...")
+        print("Generated! Exporting image...")
         path = export_img(cfg, plt_data[0], plt_data[1], dpi=300, working_root=temp_path, out_root=img_path)  # noqa: E501
-        tqdm.write("Exported!")
+        print("Exported!")
 
     del df
     del cfg
@@ -169,19 +169,19 @@ def __get_range__(start_date, end_date):
     return days
 
 
-def oisst_day(day, tqdm, do_csv=True, do_img=True, temp="", csv="", img="", stats="", _callback=None):  # noqa: E501
+def oisst_day(day, do_csv=True, do_img=True, temp="", csv="", img="", stats="", _callback=None):  # noqa: E501
     # day = datetime.strptime(date_string, '%Y/%m/%d').timetuple()
-    tqdm.write("\n----------------------------------------")
-    tqdm.write(f"Processing data for {day[1]}/{day[2]}/{day[0]}")
-    path = __oisst_export__(day[0], day[1], day[2], tqdm, do_csv, do_img, temp_path=temp, csv_path=csv, stats_path=stats, img_path=img)  # noqa: E501
+    print("\n----------------------------------------")
+    print(f"Processing data for {day[1]}/{day[2]}/{day[0]}")
+    path = __oisst_export__(day[0], day[1], day[2], do_csv, do_img, temp_path=temp, csv_path=csv, stats_path=stats, img_path=img)  # noqa: E501
     if _callback:
-            _callback(path, tqdm)
+            _callback(path)
 
 # def oisst_range(start_date, end_date, do_csv=True, do_img=True, temp="", csv="", img="", stats="", _callback=None):  # noqa: E501
 #     date_range = __get_range__(start_date, end_date)
 #     for day in tqdm(date_range):
-#         tqdm.write("\n----------------------------------------")
-#         tqdm.write(f"Processing data for {day[1]}/{day[2]}/{day[0]}")  # noqa: E501
+#         print("\n----------------------------------------")
+#         print(f"Processing data for {day[1]}/{day[2]}/{day[0]}")  # noqa: E501
 #         path = __oisst_export__(day[0], day[1], day[2], do_csv, do_img, temp_path=temp, csv_path=csv, stats_path=stats, img_path=img)  # noqa: E501
 #         if _callback:
-#             _callback(path, tqdm)
+#             _callback(path)

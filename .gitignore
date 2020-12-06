@@ -1,3 +1,4 @@
 /out/img/*
 /out/stats/
 /out/data/*
+node_modules/
